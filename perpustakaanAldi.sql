@@ -74,6 +74,7 @@ show tables;
 alter table peminjaman drop LamaPinjam;
 desc Peminjaman;
 desc buku;
+ALTER TABLE Buku CHANGE Judul NamaBuku VARCHAR(255) NOT NULL;
 alter table buku add Jumlah int(3) not null after judul;
 alter table buku drop jumlah;
 
