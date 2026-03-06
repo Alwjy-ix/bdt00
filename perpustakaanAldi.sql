@@ -73,7 +73,6 @@ foreign key (IDBuku) references Buku (IDBuku) on update cascade on delete cascad
 show tables;
 alter table peminjaman drop LamaPinjam;
 desc Peminjaman;
-alter table anggota change nama NamaAnggota char (55) not null;
 desc buku;
 alter table buku add Jumlah int(3) not null after judul;
 alter table buku drop jumlah;
