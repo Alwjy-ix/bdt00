@@ -197,13 +197,14 @@ Select TipeKamar, TarifPerKamar from Kamar;
 
 -- mencari data
 select IdKamar, TipeKamar From kamar Where TipeKamar = 'Standard' and StatusKetersediaan = 'Tersedia';
-select IdKamar, TipeKamar From kamar Where TipeKamar = 'Standard' or TipeKamar = 'kam001';
+select * from kamar;
+
+
 select * From kamar Where TipeKamar != 'Standard';
 select IDPegawai, NamaLengkap from Pegawai where jabatan ='Pegawai';
 Select IDLayananTambahan, NamaLayanan From LayananTambahan Where Biaya <= 150000 and Biaya > 50000;
 
 -- cari data menggunakan beetween pakai and or
-Select * from Kamar where Hargakamar between 300000 and 500000;
 Select * from LayananTambahan Where biaya between 80000 and 250000 or NamaLayanan = 'RoomService';
 
 
@@ -226,9 +227,9 @@ select * from tamu where IDTamu not like 'tamu01';
 
 -- REGEXP
 -- ^ adalah untuk awal kata, $ akhir kata, [] pilihan karakter
--- nama yang terdapat huruf U
+-- alamat yang terdapat huruf ya
 SELECT * FROM Tamu
-WHERE NamaLengkap REGEXP 'u';
+WHERE alamat REGEXP 'ya';
 -- Nama tamu yang diawali huruf A
 SELECT * FROM Tamu
 WHERE NamaLengkap REGEXP '^A';
@@ -256,6 +257,56 @@ WHERE NamaLengkap REGEXP '^[ABV]';
 SELECT * FROM Tamu
 WHERE NamaLengkap REGEXP '[ao]$';
 
+
+-- soal
+-- tampilkan harga kamar yang biayanya antara 30ribu sampai 50ribu
+Select * from Kamar where Hargakamar between 300000 and 500000;
+
+-- tampilkan tipe kamar yang termasuk standard atau idkamarnya kam006
+select IdKamar, TipeKamar From kamar Where TipeKamar = 'Standard' or IdKamar = 'kam006';
+
+-- Tampilkan seluruh data tamu yang alamatnya mengandung kata 'manggis' atau 'pepaya', kemudian urutkan hasil berdasarkan nama tamu secara desc.
+select * from Tamu 
+where Alamat like '%manggis%' or Alamat like '%pepaya%' 
+order by NamaLengkap desc;
+
+-- Hitung total jumlah layanan yang dipesan oleh setiap tamu
+select IDTamu, sum(JumlahLayanan)
+from PemesananLayanan 
+group by IDTamu;
+
+-- Tampilkan total pendapatan layanan dari seluruh transaksi
+select sum(TotalBayar)
+from PemesananLayanan;
+
+-- Tampilkan NamaLengkap pegawai dan NamaLayanan tambahan yang ditangani oleh suatu pegawai
+select Pegawai.NamaLengkap, LayananTambahan.NamaLayanan 
+from Pegawai 
+join LayananTambahan on Pegawai.IDPegawai = LayananTambahan.IDPegawai;
+
+-- Tampilkan TanggalCheckin, StatusReservasi, dan NamaLengkap tamu yang melakukan reservasi
+select Reservasi.TanggalCheckin, Reservasi.StatusReservasi, Tamu.NamaLengkap 
+from Reservasi 
+join Tamu on Reservasi.IDTamu = Tamu.IDTamu;
+
+-- Tampilkan TipeKamar, HargaKamar, dan IDReservasi untuk mengetahui data kamar yang sudah direservasi
+select Kamar.TipeKamar, Kamar.HargaKamar, ReservasiKamar.IDReservasi 
+from Kamar 
+join ReservasiKamar on Kamar.IDKamar = ReservasiKamar.IDKamar;
+
+-- Tampilkan NamaLengkap tamu dan WaktuPemesanan dari layanan tambahan yang mereka pesan
+select Tamu.NamaLengkap, PemesananLayanan.WaktuPemesanan 
+from Tamu 
+join PemesananLayanan on Tamu.IDTamu = PemesananLayanan.IDTamu;
+
+-- Tampilkan biaya layanan paling mahal dan biaya layanan paling murah dari data layanan tambahan
+select max(Biaya) as 'termahal', min(Biaya) as 'termurah'
+from LayananTambahan;
+select * from layananTambahan;
+
+-- Hitung rata-rata harga kamar dari semua kamar yang ada di hotel
+select avg(HargaKamar) as 'rata-rata harga kamar'
+from Kamar;
 
 
 drop database HotelAldi;
