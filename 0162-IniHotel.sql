@@ -257,8 +257,6 @@ WHERE NamaLengkap REGEXP '^[ABV]';
 SELECT * FROM Tamu
 WHERE NamaLengkap REGEXP '[ao]$';
 
-
--- soal
 -- tampilkan harga kamar yang biayanya antara 30ribu sampai 50ribu
 Select * from Kamar where Hargakamar between 300000 and 500000;
 
@@ -270,7 +268,7 @@ select * from Tamu
 where Alamat like '%manggis%' or Alamat like '%pepaya%' 
 order by NamaLengkap desc;
 
--- Hitung total jumlah layanan yang dipesan oleh setiap tamu
+-- Tampilkan total jumlah layanan yang dipesan oleh setiap tamu
 select IDTamu, sum(JumlahLayanan)
 from PemesananLayanan 
 group by IDTamu;
@@ -279,18 +277,16 @@ group by IDTamu;
 select sum(TotalBayar)
 from PemesananLayanan;
 
--- Tampilkan NamaLengkap pegawai dan NamaLayanan tambahan yang ditangani oleh suatu pegawai
-select Pegawai.NamaLengkap, LayananTambahan.NamaLayanan 
-from Pegawai 
-join LayananTambahan on Pegawai.IDPegawai = LayananTambahan.IDPegawai;
+-- Tampilkan Namalayanantambahan dan Nama pegawai yang bertanggung jawab atas layanan tersebut
+select LayananTambahan.NamaLayanan, Pegawai.NamaLengkap 
+from LayananTambahan 
+join Pegawai on LayananTambahan.IDPegawai = Pegawai.IDPegawai;
 
--- Tampilkan TanggalCheckin, StatusReservasi, dan NamaLengkap tamu yang melakukan reservasi
-select Reservasi.TanggalCheckin, Reservasi.StatusReservasi, Tamu.NamaLengkap 
-from Reservasi 
-join Tamu on Reservasi.IDTamu = Tamu.IDTamu;
+select * from Pegawai;
+select * from LayananTambahan;
 
--- Tampilkan TipeKamar, HargaKamar, dan IDReservasi untuk mengetahui data kamar yang sudah direservasi
-select Kamar.TipeKamar, Kamar.HargaKamar, ReservasiKamar.IDReservasi 
+-- Tampilkan TipeKamar dan IdReservasi untuk mengetahui data kamar yang sudah direservasi
+select Kamar.TipeKamar, ReservasiKamar.IDReservasi 
 from Kamar 
 join ReservasiKamar on Kamar.IDKamar = ReservasiKamar.IDKamar;
 
@@ -304,9 +300,25 @@ select max(Biaya) as 'termahal', min(Biaya) as 'termurah'
 from LayananTambahan;
 select * from layananTambahan;
 
--- Hitung rata-rata harga kamar dari semua kamar yang ada di hotel
+-- Tampilkan rata-rata harga kamar dari semua kamar yang ada di hotel
 select avg(HargaKamar) as 'rata-rata harga kamar'
 from Kamar;
+
+-- Tampilkan NamaLengkap tamu dan TanggalCheckin untuk melihat jadwal kedatangan tamu
+select Tamu.NamaLengkap, Reservasi.TanggalCheckin 
+from Tamu 
+join Reservasi on Tamu.IDTamu = Reservasi.IDTamu;
+
+-- Tampilkan total jumlah reservasi yang pernah dibuat di hotel
+select count(IdReservasi) 
+from Reservasi;
+
+-- Tampilkan daftar jabatan apa saja yang ada di hotel tanpa menampilkan data duplikat
+select distinct Jabatan 
+from Pegawai;
+
+
+
 
 
 drop database HotelAldi;
