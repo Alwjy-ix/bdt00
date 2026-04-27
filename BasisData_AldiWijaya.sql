@@ -272,7 +272,7 @@ Select * from detailtransaksi;
 
 -- Contoh 1. Buat Prosedur untuk memanggil seluruh data Produk yang harganya antara 15000 sampai dengan 30000
 DELIMITER //
-create procedure DataProduk()
+create procedure DataProduk(hargaAwal int, hargaAkhir int)
 begin
 	Select * from produk where harga between 15000 and 30000;
 end  // 
@@ -287,16 +287,41 @@ drop procedure DataProduk;
 -- ================================================== PROSEDUR DENGAN PARAMETER ====================================================
 -- Buat Prosedur untuk memanggil seluruh data Produk yang harganya antara harga tertentu,
 -- harga ini ditentukan ole User secara langsung.
-
+-- dengan parameter
+DELIMITER //
+create procedure DataProdukBerdasarkanHarga(hargaAwal int, hargaAkhir int)
+begin
+	Select * from produk where harga between hargaAwal and hargaAkhir;
+end  // 
+DELIMITER ;
+call DataProdukBerdasarkanHarga(17000,100000);
+call DataProdukBerdasarkanHarga(50000,200000);
+drop procedure DataProdukBerdasarkanHarga;
 
 
 -- ================================================== LATIHAN PROSEDUR ============================================================
 -- 1. Buatlah prosedur untuk input Seluruh data produk
+select * from produk;
+desc produk;
 DELIMITER //
+create procedure inputProduk(id varchar(10), namaproduk varchar(100), satuan varchar(50), harga int(11), stok int(11))
 begin
-	 
+	insert into produk values(id, namaproduk, satuan, harga, stok);
 end  // 
 DELIMITER ;
+call inputProduk('BP-BR-011', 'Beras Ramos 100kg', 'Beras', 85000, 111);
+
+-- update nama produk
+DELIMITER //
+create procedure updateNamaProduk(id varchar(10), namaproduk varchar(100))
+begin
+	update Produk set namaproduk = namaproduk where idproduk = id;
+end  // 
+DELIMITER ;
+call updateNamaProduk('BP-BR-011', 'Nasi bakar');
+
+
+
 -- 2. Buatlah prosedur untuk input Seluruh data pelanggan
 -- 3. Buatlah prosedur untuk input Seluruh data Transaksi
 -- 4. Buatlah Prosedur untuk input seluruh data DetailTransaksi
@@ -305,7 +330,21 @@ DELIMITER ;
 -- 7. Buatlah prosedur untuk delete data Transaksi
 -- 8. Buatlah Prosedur untuk delete data DetailTransaksi
 -- 9. Buatlah prosedur untuk Update data produk (Data yang diupdate dapat apa saja selain dari primary key)
+select * from produk;
+DELIMITER //
+create procedure updateDataProduk(id varchar(10), namaproduk varchar(100), satuan varchar(50), harga int(11), stok int(11))
+begin
+	update Produk set namaproduk = namaproduk where idproduk = id;
+    update Produk set satuan = satuan where idproduk = id;
+    update Produk set harga = harga where idproduk = id;
+    update Produk set stok = stok where idproduk = id;
+end  // 
+DELIMITER ;
+call updateDataProduk('BP-BR-011', 'Nasi ayam geprek', 'piring', 20000, 99);
+
 -- 10. Buatlah prosedur untuk Update data pelanggan (Data yang diupdate dapat apa saja selain dari primary key)
+
+
 -- 11. Buatlah prosedur untuk Update data Transaksi (Data yang diupdate dapat apa saja selain dari primary key/ Foreign Key)
 -- 12. Buatlah Prosedur untuk Update data DetailTransaksi (Data yang diupdate dapat apa saja selain dari primary key/ Foreign Key)
 
