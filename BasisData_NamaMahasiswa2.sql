@@ -3,6 +3,7 @@ drop database BasisData_NamaMahasiswa2;
 Create database BasisData_NamaMahasiswa2;
 use BasisData_NamaMahasiswa2;
 
+repair table mysql.proc;
 
 -- Membuat Tabel-Tabel
 CREATE TABLE Produk (
@@ -247,6 +248,30 @@ Select * from detailtransaksi;
 -- Total belanja kurang dari itu, maka diskon total bayar hanya diberikan sebesar 5%.
 -- Berikan user kebebasan untuk input ID Transaksi yang ingin ia ketahui.
 -- Kolom hasil yang ditampilkan adalah: ID Transaksi, Total Bayar (Jumlah beli * Harga) serta Total Bayar Setelah Diskon
+Delimiter //
+Create procedure HitungDiskonTransaksi(in IdInput varchar(10))
+begin
+	declare totalBelanja int;
+    declare totalAkhir int;
+    -- menhitung total bayar lalu masukkan ke totalBelanja
+    select sum(produk.harga * DetailTransaksi.jumlah) into totalBelanja
+    from DetailTransaksi
+    join produk on DetailTransaksi.idproduk = produk.idproduk
+    where DetailTransaksi.idtransaksi = idinput;
+    
+    if totalBelanja > 100000 then
+		set totalAkhir = totalBelanja * 0.9;
+	else 
+		set totalAkhir = totalBelanja * 0.95;
+	end if;
+    -- tampilkan hasil
+    select idInput as 'id transaksi', totalBelanja as 'Total Bayar', totalAkhir as 'total bayar setelah diskon';
+
+end //
+Delimiter ;
+-- panggil
+call hitungDiskonTransaksi('TR-01');
+call hitungDiskonTransaksi('TR-02');
 
 select * from detailtransaksi;
 select * from produk;
@@ -254,8 +279,23 @@ select * from produk;
 -- ====================================== LATIHAN Procedure IN OUT ======================================================
 -- Buat Procedure untuk Menampilkan ID Transaksi dan hasil perhitungan Total Bayar (jumlah beli * harga)
 -- Adapun Parameter yang diinputkan berupa ID Transaksi (Sebagai Parameter IN) dan TotalBayar (Sebagai Parameter OUT)
+Delimiter //
+create procedure totalBayarInOut(in inputId varchar(10), out totalBelanja int)
+begin
+-- memasukkan hasil perhitungan ke totalBelanja menggunakan into
+select sum(produk.harga * detailtransaksi.jumlah) into totalBelanja
+from detailTransaksi
+join produk on detailtransaksi.idproduk = produk.idproduk
+where detailtransaksi.idtransaksi = inputId;
 
+end //
+Delimiter ;
 
+-- panggil procedure dan simpan hasilnya di variable @bayar
+
+call totalBayarInOut('TR-02', @bayar);
+-- tampilkan hasil variabel bersama id transaksi nya
+select @bayar as 'TotalBayar';
 
 
 
@@ -341,4 +381,3 @@ SELECT detailtransaksi.idtransaksi, detailtransaksi.idproduk, harga, jumlah, SUM
 
 
 -- Buatkan Fungsi untuk Diskon yang dapat ditentukan kemudian oleh User untuk ID Transaksi Tertentu
-
