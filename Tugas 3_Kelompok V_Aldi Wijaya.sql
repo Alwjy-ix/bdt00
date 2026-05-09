@@ -207,12 +207,58 @@ join layananTambahan on pemesananLayanan.idLayananTambahan = layananTambahan.idL
 select * from view_detailPemesananLayanan;
 
 -- Procedure 1. Memasukkan data tamu baru ke dalam tabel tamu secara praktis
+desc tamu;
+select * from tamu;
+Delimiter //
+create procedure inputTamu(idTamu char(6), namaTamu varchar(50), Alamat varchar(255), noTelp varchar(13))
+begin
+	insert into tamu values(idTamu, namaTamu, Alamat, noTelp);
+end //
+Delimiter ;
+call inputTamu('tamu11','Ridz','Celentang','0812345677889');
 
--- Procedure 2. menghitung total pendapatan dari layanan tambahan berdasarkan id tamu
 
--- Function 1. 
+-- 2. Procedure untuk memanggil seluruh data kamar yang harganya di antara rentang tertentu
+select * from kamar;
+Delimiter //
+create procedure dataKamarBerdasarkanHarga(hargaAwal int, hargaAkhir int)
+begin
+	select * from kamar where hargaKamar between hargaAwal and hargaAkhir;
+end //
+Delimiter ;
+call dataKamarBerdasarkanHarga(300000, 450000);
+drop procedure dataKamarBerdasarkanHarga;
 
--- Function 2. 
+-- Function 1. function untuk memberikan label harga kamar (Murah/Mahal)
+Delimiter //
+create function labelHarga(harga decimal(10,2))
+returns varchar(20)
+deterministic
+begin
+	declare hasil varchar(20);
+    if harga >= 500000 then set hasil = 'Ekslusif';
+    else set hasil = 'Reguler';
+    end if;
+    return hasil;
+end //
+Delimiter ;
+select idKamar, TipeKamar, HargaKamar, LabelHarga(HargaKamar) as 'Kategori' from kamar;
 
+
+-- Function 2. Menghitung pajak hotel dengan PPN 11%
+Delimiter //
+create function hitungPajakHotel(biaya decimal(10,2))
+returns decimal(10,2)
+deterministic
+begin
+	declare pajak decimal(10,2);
+    set pajak = biaya * 0.11;
+	return pajak;
+end //
+Delimiter ;
+
+select idPemesanan, idTamu, totalBayar, hitungPajakHotel(totalBayar) as 'PPN 11%', 
+(totalBayar + hitungPajakHotel(totalBayar)) as 'Total Akhir'
+from pemesananLayanan;
 
 
