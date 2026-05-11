@@ -331,5 +331,17 @@ ON Schedule at current_timestamp() + Interval 10 second
 DO
 Insert Into Pesan (message) VALUES ('Test Event 3');
 
+create event event4 
+on schedule every 5 second do
+insert into Pesan (message) values ('test event 4');
+
+-- event delete
+CREATE EVENT delete_event4
+ON SCHEDULE EVERY 4 SECOND
+DO
+DELETE FROM Pesan
+WHERE message = 'test event 4';
+
+
 show events;
 select * from pesan;
